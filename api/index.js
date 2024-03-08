@@ -1,7 +1,12 @@
-const express=require('express');
-const mongoose=require('mongoose');
+
+
+
+import userRouter from './routes/userRoute.js';
+import  express  from 'express';
+import mongoose from 'mongoose';
+import dotenv from 'dotenv';
 const app=express();
-const dotenv = require('dotenv');
+
 
 dotenv.config();
 
@@ -11,6 +16,11 @@ mongoose.connect(process.env.MONGO).then(()=>{
     console.log(err);
 })
 
+
+app.use("/"  , userRouter);
+
+
+
 app.listen(3000 , () =>{
     try {
         console.log("server running on server 3000");
@@ -19,3 +29,4 @@ app.listen(3000 , () =>{
         console.log(error);
     }
 })
+
