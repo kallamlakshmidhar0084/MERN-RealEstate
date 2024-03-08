@@ -1,5 +1,6 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
-/*# sourceMappingURL=index.css.map */
+* {
+  margin: 0;
+}/*# sourceMappingURL=index.css.map */
