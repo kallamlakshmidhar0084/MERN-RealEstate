@@ -22,7 +22,7 @@ mongoose.connect(process.env.MONGO).then(()=>{
 
 //routes for different cases
 app.use("/"  , userRouter);
-app.use("/api/auth/" , authRouter); 
+app.use("/api/auth" , authRouter); 
 
 // middleware for error handling
 app.use(errorHandling)
