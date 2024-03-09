@@ -18,7 +18,7 @@ function App() {
           <Route path="/home" exact Component={Home} />
           <Route path="/sign-in" exact Component={SignIn} />
           <Route path="/about" exact Component={About} />
-          <Route path="/signUp" exact Component={SignUp} />
+          <Route path="/sign-up" exact Component={SignUp} />
           <Route path="/search" exact Component={Search} />
         
         </Routes>
