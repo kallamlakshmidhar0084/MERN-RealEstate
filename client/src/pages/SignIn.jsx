@@ -18,7 +18,6 @@ function SignIn() {
   const handleSubmit=async (e)=>{
     e.preventDefault();
     dispatch(signInStart());
-    useDispatch
     try {
       const response  =await axios.post('/api/auth/sign-in',{
         email:formData.email,
@@ -28,12 +27,13 @@ function SignIn() {
         dispatch(signInFailure( response.message));
 
       }
-
-      dispatch(singInSuccess());
+      console.log("sign in success: ", response);
+      dispatch(singInSuccess(response));
       console.log("sign in response: @SignIn.jsx", response);
       navigate('/');
       
     } catch (error) {
+      console.log(error);
       dispatch(signInFailure(error.response.data.message));
     }
     
