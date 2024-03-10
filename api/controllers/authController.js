@@ -20,6 +20,7 @@ export const signIn=async(req , res , next)=>{
         try {
             const validUser= await User.findOne({email});
             if(!validUser){
+                console.log("user not found @authController")
                 return next(errorHandler(404 , "User Not found"));
             }
             const validPassword=bcryptjs.compareSync(password , validUser.password);

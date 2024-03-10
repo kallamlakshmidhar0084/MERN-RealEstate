@@ -25,7 +25,16 @@ app.use("/"  , userRouter);
 app.use("/api/auth" , authRouter); 
 
 // middleware for error handling
-app.use(errorHandling)
+app.use((err ,req , res , next)=>{
+    const statusCode=err.statusCode || 500;
+    console.log("@index.js : middleware caught error :",err.message);
+    const message=err.message || "internal server ERROR";
+    return res.status(statusCode).json({
+        success:false,
+        statusCode,
+        message,
+    });
+})
 
 app.listen(3000 , () =>{
     try {
