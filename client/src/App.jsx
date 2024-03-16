@@ -2,9 +2,10 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Home from "./pages/Home.jsx";
 import SignIn from "./pages/SignIn.jsx";
 import About from "./pages/About.jsx";
+import Profile from "./pages/Profile.jsx";
+import PrivateRoute from "./components/PrivateRoute.jsx"
 
 import SignUp from "./pages/SignUp.jsx";
-
 import Search from "./pages/Search.jsx";
 import Navbar from "./components/Navbar.jsx"
 
@@ -20,6 +21,12 @@ function App() {
           <Route path="/about" exact Component={About} />
           <Route path="/sign-up" exact Component={SignUp} />
           <Route path="/search" exact Component={Search} />
+          <Route path="/search" exact Component={Search} />
+          <Route element={<PrivateRoute/>}>
+          <Route path="/profile" exact Component={Profile} />
+
+          </Route>
+
         
         </Routes>
       </BrowserRouter>
