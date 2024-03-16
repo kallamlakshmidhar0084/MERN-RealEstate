@@ -6,12 +6,15 @@ import authRouter from "./routes/authRoute.js";
 import  express  from 'express';
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
+import cookieParser from 'cookie-parser';
 import { errorHandling } from './middleware/errorHandling.js';
 const app=express();
 
 //to parse json incoming files
 app.use(express.json());
 
+//to get info from cookie
+app.use(cookieParser());
 dotenv.config();
 //connecting mongoose
 mongoose.connect(process.env.MONGO).then(()=>{
@@ -21,7 +24,7 @@ mongoose.connect(process.env.MONGO).then(()=>{
 })
 
 //routes for different cases
-app.use("/"  , userRouter);
+app.use("/api/user"  , userRouter);
 app.use("/api/auth" , authRouter); 
 
 // middleware for error handling
