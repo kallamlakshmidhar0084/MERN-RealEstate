@@ -3,6 +3,7 @@ import { Link , useNavigate} from "react-router-dom"
 import { useDispatch, useSelector } from "react-redux"
 import {signInStart , singInSuccess , signInFailure} from "../redux/users/userSlice.js"
 import axios from "axios";
+import OAuth from "../components/OAuth.jsx";
 function SignIn() {
   const [formData , setFormData]=useState({});
   const {err , loading} = useSelector((state)=>state.user) //user is name of the slice 
@@ -48,11 +49,12 @@ function SignIn() {
       <input type="email" placeholder="Email" className="border-2 p-3 rounded-lg " id="email" onChange={handleChange}/>
       <input type="password" placeholder="Password" className="border-2 p-3 rounded-lg " id="password" onChange={handleChange}/>
       <button disabled={loading} className="bg-slate-700 text-white p-3 rounded-lg uppercase hover:opacity-90 disabled:80"> {loading ? "Loading..." :"Sign Up"} </button>
+      <OAuth/>
     </form>
     <div className="flex gap-2 mt-3">
       <p>Dont have an account?</p>
       <Link to={'/sign-up'}>
-        <span className="text-blue-500 underline">Sign Up</span>
+        <span className="text-blue-500 underline">Sign In</span>
       </Link>
     </div>
     {err && <div className="text-red-500">{err}</div>}

@@ -14,6 +14,10 @@ const userSchema =  new mongoose.Schema({
     password:{
         type:String,
         required:true,
+    },
+    avatar:{
+        type:String,
+        default:"https://yourteachingmentor.com/wp-content/uploads/2020/12/istockphoto-1223671392-612x612-1.jpg"
     }
 },{
     timestamps : true
