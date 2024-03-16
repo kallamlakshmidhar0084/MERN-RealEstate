@@ -1,12 +1,14 @@
 import { useState } from "react"
 import { Link , useNavigate} from "react-router-dom"
+import { useDispatch, useSelector } from "react-redux"
+import {signInStart , singInSuccess , signInFailure} from "../redux/users/userSlice.js"
 import axios from "axios";
 import OAuth from "../components/OAuth";
 function SignUp() {
   const [formData , setFormData]=useState({});
-  const [err , setErr]=useState(null);
-  const [loading , setLaoding]=useState(false);
+  const {error , loading} = useSelector((state)=>state.user) //user is name of the slice 
   const navigate=useNavigate();
+  const dispatch=useDispatch();
   const handleChange=(e)=>{
       e.preventDefault();
       setFormData({
@@ -16,26 +18,21 @@ function SignUp() {
   }
   const handleSubmit=async (e)=>{
     e.preventDefault();
-    setLaoding(true);
+    dispatch(signInStart());
     try {
       const response  =await axios.post('/api/auth/sign-up',{
         username:formData.username,
         email:formData.email,
         password:formData.password,
       })
-  
-      if(response.success===false){
-        setErr(response.message);
-        setLaoding(false);
-      }
-      setLaoding(false);
-      setErr(null);
+
+      dispatch(singInSuccess(response));
+
       console.log("sigup response: @SignUp.jsx", response);
       navigate('/sign-in');
       
     } catch (error) {
-      setLaoding(false);
-      setErr(error.message);
+      dispatch(signInFailure(error.response.data.message));
     }
     
   }
@@ -57,6 +54,7 @@ function SignUp() {
         <span className="text-blue-500 underline">Sign In</span>
       </Link>
     </div>
+    {error && <div className="text-red-500">{error}</div>}
     </div>
     
     </>

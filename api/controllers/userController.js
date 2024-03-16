@@ -15,6 +15,7 @@ export const updateUser = async (req , res , next)=>{
             req.body.password=bcryptjs.hashSync(req.body.password , 10);
         }
 
+        console.log(req.body);
         const updateUser= await User.findByIdAndUpdate(req.params.id , {
             $set:{
                 username : req.body.username,
@@ -24,7 +25,6 @@ export const updateUser = async (req , res , next)=>{
             }
         }, {new : true})
 
-
         const {password , ...safeUser}=updateUser;
         res.status(200).json({safeUser})
     } catch (error) {
@@ -32,4 +32,19 @@ export const updateUser = async (req , res , next)=>{
         next(errorHandler(400 , "internal server error"))
     }
     
+
+}
+
+export const deleteUser = async (req , res , next)=>{
+    console.log("deleting user");
+    if(req.user.id!==req.params.id) return next(errorHandler( 401 , "You can only delete your account"));
+    try {
+
+        await User.findByIdAndDelete(req.params.id);
+        res.clearCookie('access_token')
+        res.status(200).json("user has been deleted");
+    } catch (error) {
+        console.log(error);
+        next(errorHandler(400 , "internal server error"))
+    }
 }

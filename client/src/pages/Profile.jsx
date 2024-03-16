@@ -1,5 +1,8 @@
-import { useSelector } from "react-redux";
-import { useEffect, useRef, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useEffect, useRef, useState  } from "react";
+import {deleteUserStart, deleteUserSuccess, updateUserFailure , updateUserStart , updateUserSuccess,signOutUserStart,
+  signOutUserSuccess,
+  signOutUserFailure,} from "../redux/users/userSlice.js"
 import {
   getStorage,
   ref,
@@ -7,17 +10,20 @@ import {
   getDownloadURL,
 } from "firebase/storage";
 import app from "../firebase/firebase.js";
+import axios from "axios";
+import {  useNavigate } from "react-router-dom";
 function Profile() {
   const currUser = useSelector((state) => state.user);
   const [file, setFile] = useState(null);
   const [filePerc, setFilePerc] = useState(0);
   const [fileUploadError, setFileUploadError] = useState(false);
   const [formData, setFormData] = useState({});
-  console.log(filePerc);
-  console.log(formData);
-  const fileRef = useRef(null);
 
-  const handleFileUpload = (file) => {
+  const userData=currUser.currentUser.data;
+  const fileRef = useRef(null);
+  const dispatch=useDispatch();
+  const navigate=useNavigate();
+    const handleFileUpload = (file) => {
     const storage = getStorage(app);
     const fileName = new Date().getTime() + file.name;
     const storageRef = ref(storage, fileName);
@@ -40,6 +46,55 @@ function Profile() {
     );
   };
 
+  const handleChange = (e)=>{
+    e.preventDefault();
+    setFormData({...formData , [e.target.id] : e.target.value});    
+  }
+
+  const handleSubmit = async (e)=>{
+    e.preventDefault();
+    try {
+      dispatch(updateUserStart());
+      console.log(formData)
+      const response= await axios.post(`/api/user/update/${userData._id}`, {
+        ...formData
+      }
+      )
+      console.log(response)
+      dispatch(updateUserSuccess(response.data.safeUser._doc));
+      navigate("/sign-in");
+      
+    } catch (error) {
+      dispatch(updateUserFailure(error.message));
+      
+    }
+  }
+
+  const handleDelete = async (e)=>{
+    e.preventDefault();
+
+    try {
+      dispatch(deleteUserStart());
+      const response = await axios.delete(`/api/user/delete/${userData._id}` )
+      dispatch(deleteUserSuccess());
+    } catch (error) {
+      dispatch(updateUserFailure(error.message));
+
+    }
+
+  }
+
+  const handleSignOut = async (e)=>{
+    e.preventDefault();
+    try {
+      dispatch(signOutUserStart());
+      await axios.get('/api/auth/sign-out');
+      dispatch(signOutUserSuccess());
+    } catch (error) {
+      dispatch(signOutUserFailure(error.message));
+    }
+  }
+
   useEffect(() => {
     if (file) {
       handleFileUpload(file);
@@ -48,7 +103,7 @@ function Profile() {
   return (
     <div className="p-3 max-w-lg mx-auto">
       <h1 className="text-3xl text-center my-5 font-semibold">Profile</h1>
-      <form className="flex flex-col p-2 gap-5">
+      <form onSubmit={handleSubmit} className="flex flex-col p-2 gap-5">
         <input
           onChange={(e) => {
             setFile(e.target.files[0]);
@@ -66,6 +121,7 @@ function Profile() {
           className="w-20 rounded-full object-cover  cursor-pointer self-center"
           src={ formData.avatar || currUser.currentUser.data.avatar}
           alt="profile picture"
+          onChange={handleChange}
         />
         <p className="text-sm self-center">
           {fileUploadError ? (
@@ -85,26 +141,32 @@ function Profile() {
           type="text"
           placeholder="username"
           className=" border p-3 rounded-lg max-w-xl"
+          defaultValue={userData.username}
+          onChange={handleChange}
         />
         <input
           id="email"
           type="email"
           placeholder="email"
           className=" border p-3 rounded-lg max-w-xl"
+          defaultValue={userData.email}
+          onChange={handleChange}
+
         />
         <input
           id="password"
           type="password"
           placeholder="password"
           className=" border p-3 rounded-lg max-w-xl"
+          onChange={handleChange}
         />
         <button className="bg-slate-700 p-3 rounded-lg text-white uppercase hover:opacity-95 disabled:opacity-80">
           Update
         </button>
       </form>
       <div className="flex justify-between my-2 p-2">
-        <span className="text-red-700 cursor-pointer">Delete Account?</span>
-        <span className="text-red-700 cursor-pointer">Sign Out</span>
+        <span onClick={handleDelete} className="text-red-700 cursor-pointer">Delete Account?</span>
+        <span onClick={handleSignOut} className="text-red-700 cursor-pointer">Sign Out</span>
       </div>
     </div>
   );

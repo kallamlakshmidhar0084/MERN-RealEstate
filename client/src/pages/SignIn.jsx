@@ -6,7 +6,7 @@ import axios from "axios";
 import OAuth from "../components/OAuth.jsx";
 function SignIn() {
   const [formData , setFormData]=useState({});
-  const {err , loading} = useSelector((state)=>state.user) //user is name of the slice 
+  const {error , loading} = useSelector((state)=>state.user) //user is name of the slice 
   const navigate=useNavigate();
   const dispatch=useDispatch();
   const handleChange=(e)=>{
@@ -48,16 +48,16 @@ function SignIn() {
     <form onSubmit={handleSubmit} className="flex flex-col gap-5 "> 
       <input type="email" placeholder="Email" className="border-2 p-3 rounded-lg " id="email" onChange={handleChange}/>
       <input type="password" placeholder="Password" className="border-2 p-3 rounded-lg " id="password" onChange={handleChange}/>
-      <button disabled={loading} className="bg-slate-700 text-white p-3 rounded-lg uppercase hover:opacity-90 disabled:80"> {loading ? "Loading..." :"Sign Up"} </button>
+      <button disabled={loading} className="bg-slate-700 text-white p-3 rounded-lg uppercase hover:opacity-90 disabled:80"> {loading ? "Loading..." :"Sign In"} </button>
       <OAuth/>
     </form>
     <div className="flex gap-2 mt-3">
       <p>Dont have an account?</p>
       <Link to={'/sign-up'}>
-        <span className="text-blue-500 underline">Sign In</span>
+        <span className="text-blue-500 underline">Sign Up</span>
       </Link>
     </div>
-    {err && <div className="text-red-500">{err}</div>}
+    {error && <div className="text-red-500">{error}</div>}
     </div>
     
     </>

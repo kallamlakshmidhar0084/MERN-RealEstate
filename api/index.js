@@ -3,6 +3,7 @@
 
 import userRouter from './routes/userRoute.js';
 import authRouter from "./routes/authRoute.js";
+import listingRouter from "./routes/listingRoute.js";
 import  express  from 'express';
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
@@ -26,6 +27,7 @@ mongoose.connect(process.env.MONGO).then(()=>{
 //routes for different cases
 app.use("/api/user"  , userRouter);
 app.use("/api/auth" , authRouter); 
+app.use("/api/listing" , listingRouter); 
 
 // middleware for error handling
 app.use((err ,req , res , next)=>{
