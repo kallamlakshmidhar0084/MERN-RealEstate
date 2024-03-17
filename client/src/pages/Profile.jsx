@@ -11,7 +11,7 @@ import {
 } from "firebase/storage";
 import app from "../firebase/firebase.js";
 import axios from "axios";
-import {  useNavigate } from "react-router-dom";
+import {  Link, useNavigate } from "react-router-dom";
 function Profile() {
   const currUser = useSelector((state) => state.user);
   const [file, setFile] = useState(null);
@@ -163,6 +163,7 @@ function Profile() {
         <button className="bg-slate-700 p-3 rounded-lg text-white uppercase hover:opacity-95 disabled:opacity-80">
           Update
         </button>
+        <Link className="bg-green-700 text-center p-3 rounded-lg text-white uppercase hover:opacity-90" to={'/create-listing'}>Create Listing</Link>
       </form>
       <div className="flex justify-between my-2 p-2">
         <span onClick={handleDelete} className="text-red-700 cursor-pointer">Delete Account?</span>

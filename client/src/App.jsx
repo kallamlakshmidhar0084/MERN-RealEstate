@@ -8,6 +8,7 @@ import PrivateRoute from "./components/PrivateRoute.jsx"
 import SignUp from "./pages/SignUp.jsx";
 import Search from "./pages/Search.jsx";
 import Navbar from "./components/Navbar.jsx"
+import CreateListing from "./pages/CreateListing.jsx";
 
 function App() {
   return (
@@ -24,6 +25,7 @@ function App() {
           <Route path="/search" exact Component={Search} />
           <Route element={<PrivateRoute/>}>
           <Route path="/profile" exact Component={Profile} />
+          <Route path="/create-listing" exact Component={CreateListing}/>
 
           </Route>
 
