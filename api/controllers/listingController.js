@@ -1,4 +1,5 @@
 import Listing from "../models/listModel.js";
+import { errorHandler } from "../utils/error.js";
 
 
 export const createList = async( req , res , next)=>{
@@ -13,4 +14,33 @@ export const createList = async( req , res , next)=>{
     }
     
 
+}
+
+export const getUserListing = async (req , res , next)=>{
+    if(req.user.id===req.params.id){
+
+        try {
+            const lists= await Listing.find({userRef:req.params.id});
+            res.status(200).json(lists);
+        } catch (error) {
+            next(error);
+        }
+
+    }
+    else{
+        return next(errorHandler(401 , "You can only view your own Listing"));
+
+    }
+}
+
+export const deleteListing = async (req , res , next)=>{
+
+        try {
+            await Listing.findByIdAndDelete(req.params.id);
+            res.status(200).json('Listing has been deleted!');
+        } catch (error) {
+            next(error);
+        }
+
+    
 }

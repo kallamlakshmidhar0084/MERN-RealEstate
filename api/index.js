@@ -41,6 +41,7 @@ app.use((err ,req , res , next)=>{
     });
 })
 
+
 app.listen(3000 , () =>{
     try {
         console.log("server running on server 3000");

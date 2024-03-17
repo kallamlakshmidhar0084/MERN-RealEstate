@@ -18,7 +18,9 @@ function Profile() {
   const [filePerc, setFilePerc] = useState(0);
   const [fileUploadError, setFileUploadError] = useState(false);
   const [formData, setFormData] = useState({});
-
+  const [showListingError , setShowListingError]=useState(false);
+  const [updateSuccess , setUpdateSuccess]=useState(false);
+  const [listing , setListing]=useState([]);
   const userData=currUser.currentUser.data;
   const fileRef = useRef(null);
   const dispatch=useDispatch();
@@ -51,6 +53,21 @@ function Profile() {
     setFormData({...formData , [e.target.id] : e.target.value});    
   }
 
+  const handleShowListing = async ()=>{
+
+    try {
+      setShowListingError(false);
+      const response= await axios.get(`/api/listing/${userData._id}`);
+      setListing(response.data);
+      console.log(response);
+      console.log(listing)
+      
+    } catch (error) {
+      setShowListingError(true);
+
+      }
+
+  }
   const handleSubmit = async (e)=>{
     e.preventDefault();
     try {
@@ -63,10 +80,20 @@ function Profile() {
       console.log(response)
       dispatch(updateUserSuccess(response.data.safeUser._doc));
       navigate("/sign-in");
-      
+      setUpdateSuccess(true);
     } catch (error) {
       dispatch(updateUserFailure(error.message));
       
+    }
+  }
+
+  const handleListingDelete= async( listingId )=>{
+    
+    try {
+      const response= await axios.delete(`/api/listing/delete/${listingId}`)
+      setListing((list) => list.filter((l)=>l._id!==listingId));
+    } catch (error) {
+      console.log(error);
     }
   }
 
@@ -169,6 +196,53 @@ function Profile() {
         <span onClick={handleDelete} className="text-red-700 cursor-pointer">Delete Account?</span>
         <span onClick={handleSignOut} className="text-red-700 cursor-pointer">Sign Out</span>
       </div>
+      <p className='text-green-700 mt-5'>
+        {updateSuccess ? 'User is updated successfully!' : ''}
+      </p>
+      <button  onClick={handleShowListing} className='text-green-700 w-full'>
+        Show Listings
+      </button>
+      <p className="text-red-700 mt-5"> {showListingError ? "Error showing Listing" : ""}</p>
+      {console.log(listing)}
+      {(listing && listing.length>0) ?
+        <div className='flex flex-col gap-4'>
+          <h1 className='text-center mt-7 text-2xl font-semibold'>
+            Your Listings
+          </h1>
+          {listing.map((list) => (
+            <div
+              key={list._id}
+              className='border rounded-lg p-3 flex justify-between items-center gap-4'
+            >
+              <Link to={`/listing/${list._id}`}>
+                <img
+                  src={list.imageUrls[0]}
+                  alt='listing cover'
+                  className='h-16 w-16 object-contain'
+                />
+              </Link>
+              <Link
+                className='text-slate-700 font-semibold  hover:underline truncate flex-1'
+                to={`/listing/${list._id}`}
+              >
+                <p>{list.name}</p>
+              </Link>
+
+              <div className='flex flex-col item-center'>
+                <button
+                  onClick={() => handleListingDelete(list._id)}
+                  className='text-red-700 uppercase'
+                >
+                  Delete
+                </button>
+                <Link to={`/update-listing/${list._id}`}>
+                  <button className='text-green-700 uppercase'>Edit</button>
+                </Link>
+              </div>
+            </div>
+          ))}
+        </div>
+      : "" }
     </div>
   );
 }

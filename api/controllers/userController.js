@@ -1,3 +1,4 @@
+import Listing from "../models/listModel.js"
 import User from "../models/usersModel.js"
 import { errorHandler } from "../utils/error.js"
 import bcryptjs from 'bcryptjs'
@@ -48,3 +49,4 @@ export const deleteUser = async (req , res , next)=>{
         next(errorHandler(400 , "internal server error"))
     }
 }
+

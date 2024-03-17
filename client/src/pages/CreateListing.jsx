@@ -9,6 +9,7 @@ import app from "../firebase/firebase.js";
 import { setLogLevel } from "firebase/app";
 import axios from "axios";
 import { useSelector } from "react-redux";
+import { useNavigate} from "react-router-dom";
 
 function CreateListing() {
   const [files, setFiles] = useState([]);
@@ -31,6 +32,7 @@ function CreateListing() {
   const [error , setError]=useState(false);
   const [loading , setloading]=useState(false);
   const currentUser=useSelector(state => state.user);
+  const navigate=useNavigate();
   const handleUpload = (e) => {
     e.preventDefault();
     if (files.length > 0 && files.length + formData.imageUrls.length < 7) {
@@ -100,6 +102,9 @@ function CreateListing() {
     e.preventDefault();
 
     try {
+        if(formData.imageUrls.length<1) return setError("You must upload atleast one image")
+        if (+formData.regularPrice < +formData.discountPrice) return setError('Discount price must be lower than regular price');
+
         setError(false);
         setloading(true);
 
@@ -108,6 +113,7 @@ function CreateListing() {
             userRef:currentUser.currentUser.data._id,
         })
         setloading(false);
+        navigate(`/listing/${response._id}`);
         
     } catch (error) {
         console.log(error)
@@ -354,7 +360,7 @@ function CreateListing() {
                 </div>
               ))}
 
-            <button className="bg-slate-700 rounded-lg p-3 text-white uppercase hover:opacity-90 disabled:opacity-80 ">
+            <button disabled={uploading} className="bg-slate-700 rounded-lg p-3 text-white uppercase hover:opacity-90 disabled:opacity-80 ">
               {loading ? 'CREATING...' : 'CREATE LISTING'}
             </button>
             {error && <p className="text-red-700 text-sm">{error}</p>}
