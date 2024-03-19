@@ -57,7 +57,7 @@ function Profile() {
 
     try {
       setShowListingError(false);
-      const response= await axios.get(`/api/listing/${userData._id}`);
+      const response= await axios.get(`/api/listing/getAllListing/${userData._id}`);
       setListing(response.data);
       console.log(response);
       console.log(listing)

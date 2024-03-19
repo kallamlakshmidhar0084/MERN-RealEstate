@@ -10,6 +10,7 @@ import Search from "./pages/Search.jsx";
 import Navbar from "./components/Navbar.jsx"
 import CreateListing from "./pages/CreateListing.jsx";
 import UpdateListing from "./pages/UpdateListing.jsx";
+import Listing from "./pages/Listing.jsx";
 function App() {
   return (
     <div className="app">
@@ -23,6 +24,7 @@ function App() {
           <Route path="/sign-up" exact Component={SignUp} />
           <Route path="/search" exact Component={Search} />
           <Route path="/search" exact Component={Search} />
+          <Route path="/listing/:listingId" exact Component={Listing} />
           <Route element={<PrivateRoute/>}>
           <Route path="/profile" exact Component={Profile} />
           <Route path="/create-listing" exact Component={CreateListing}/>

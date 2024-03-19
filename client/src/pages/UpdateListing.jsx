@@ -125,7 +125,7 @@ import {
               userRef:currentUser.currentUser.data._id,
           })
           setloading(false);
-          navigate(`/listing/${response._id}`);
+          navigate(`/listing/${params.listingId}`);
           
       } catch (error) {
           console.log(error)

@@ -6,7 +6,7 @@ const router=express.Router();
 
 
 router.post('/create' ,verifyToken, createList);
-router.get("/:id",verifyToken , getUserListing);
+router.get('/getAllListing/:id',verifyToken , getUserListing);
 router.delete('/delete/:id' ,verifyToken, deleteListing);
 router.put('/update/:id' ,verifyToken, updateListing);
 router.get('/getList/:id',getListing);
