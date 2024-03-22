@@ -110,7 +110,7 @@ export const getAllListings = async (req, res, next) => {
         type,
 
     }).sort(
-        {[sort]:order}
+        {[sort]:order}  //mongodb function
     ).limit(limit).skip(startIndex);
 
     return res.status(200).json(listings);
