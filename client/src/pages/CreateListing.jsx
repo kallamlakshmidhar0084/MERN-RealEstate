@@ -112,8 +112,9 @@ function CreateListing() {
             ...formData,
             userRef:currentUser.currentUser.data._id,
         })
+        console.log("created list at Listing.jsx",  response);
         setloading(false);
-        navigate(`/listing/${response._id}`);
+        navigate(`/listing/${response.data._id}`);
         
     } catch (error) {
         console.log(error)

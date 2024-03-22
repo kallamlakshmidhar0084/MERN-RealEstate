@@ -1,6 +1,7 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import ListingCard from "../components/ListingCard";
 
 function Search() {
 
@@ -16,7 +17,6 @@ function Search() {
     sort: 'created_at',
     order: 'desc',
   });
-
 
   const handleSubmit=(e)=>{
     e.preventDefault();
@@ -75,7 +75,7 @@ function Search() {
         const url=urlParams.toString();
         const data =await axios.get(`/api/listing/get?${url}`)
         console.log(data.data)
-        setListings(data)
+        setListings(data.data)
         setLoading(false);
         
       } catch (error) {
@@ -126,7 +126,7 @@ function Search() {
   }
   return (
     <div className="flex flex-col md:flex-row md:min-h-screen">
-      <div className="p-7 border border-b-2 md:border-r-2">
+      <div className="p-7 border border-b-2 md:border-r-2 sm:w-[400px]">
         <form onSubmit={handleSubmit} className="flex flex-col gap-8">
           <div className="flex  items-center gap-2 ">
             <label className=" whitespace-nowrap font-semibold">Search Term:</label>
@@ -183,8 +183,28 @@ function Search() {
           <button className="bg-slate-700 text-white p-3 rounded-lg uppercase hover:opacity-90">Search</button>
         </form>
       </div>
+      <div>
       <h1 className="text-3xl font-semibold border-b p-3 text-slate-700">Listing Results:</h1>
-      <div></div>
+      <div className=" flex flex-wrap gap-6 p-3">
+        {!loading && listings.length === 0 && (
+          <p className="text-xl text-slate-700 ">No listing found</p>
+        )}
+        {loading && (
+          <p className="text-xl text-slate-700 text-center m-auto">Loading</p>
+        )}
+
+        {!loading && listings && (
+          listings.map((list)=>{
+            console.log(list);
+            return (
+            <ListingCard key={list._id} listing={list}/>
+            )
+          })
+        )}
+      </div>
+
+      </div>
+      
     </div>
   );
 }
