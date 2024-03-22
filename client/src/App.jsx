@@ -23,7 +23,6 @@ function App() {
           <Route path="/about" exact Component={About} />
           <Route path="/sign-up" exact Component={SignUp} />
           <Route path="/search" exact Component={Search} />
-          <Route path="/search" exact Component={Search} />
           <Route path="/listing/:listingId" exact Component={Listing} />
           <Route element={<PrivateRoute/>}>
           <Route path="/profile" exact Component={Profile} />
