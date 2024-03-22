@@ -17,6 +17,7 @@ function Search() {
     sort: 'created_at',
     order: 'desc',
   });
+  const [showMore , setShowMore] = useState(false)
 
   const handleSubmit=(e)=>{
     e.preventDefault();
@@ -71,10 +72,12 @@ function Search() {
     const getListingData= async () =>{
 
       try {
+        showMore(false)
         setLoading(true);
         const url=urlParams.toString();
         const data =await axios.get(`/api/listing/get?${url}`)
         console.log(data.data)
+        if(data.data.length>8) setShowMore(true);
         setListings(data.data)
         setLoading(false);
         
@@ -91,6 +94,26 @@ function Search() {
 
   }, [location.search]
   )
+
+  const onShowMore = async ()=>{
+    const numberOfListing=listings.length;
+    const index=numberOfListing
+    const urlParams= new URLSearchParams(location.search);
+    urlParams.set('startIndex' , index);
+    const searchQuery=urlParams.toString();
+
+    const data = await axios.get(`/api/listing/get?${searchQuery}`)
+    console.log(data.data);
+    const newList=[...listings , ...data.data];
+    console.log(newList);
+    setListings([...listings , ...data.data
+    ]);
+    if(data.data.length<9){
+      setShowMore(false);
+    }
+
+
+  }
 
   const handleChange= (e)=>{
 
@@ -195,11 +218,16 @@ function Search() {
 
         {!loading && listings && (
           listings.map((list)=>{
-            console.log(list);
             return (
             <ListingCard key={list._id} listing={list}/>
             )
           })
+        )}
+
+        {showMore && (
+          <button className="text-green-600 hover:underline p-7" onClick={()=>{
+            onShowMore();
+          }} > Show more</button>
         )}
       </div>
 
