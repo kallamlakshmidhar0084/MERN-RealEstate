@@ -1,15 +1,13 @@
-
-
-
-import userRouter from './routes/userRoute.js';
+import userRouter from "./routes/userRoute.js";
 import authRouter from "./routes/authRoute.js";
 import listingRouter from "./routes/listingRoute.js";
-import  express  from 'express';
-import mongoose from 'mongoose';
-import dotenv from 'dotenv';
-import cookieParser from 'cookie-parser';
-import { errorHandling } from './middleware/errorHandling.js';
-const app=express();
+import express from "express";
+import mongoose from "mongoose";
+import dotenv from "dotenv";
+import cookieParser from "cookie-parser";
+import { errorHandling } from "./middleware/errorHandling.js";
+import path from "path";
+const app = express();
 
 //to parse json incoming files
 app.use(express.json());
@@ -18,36 +16,48 @@ app.use(express.json());
 app.use(cookieParser());
 dotenv.config();
 //connecting mongoose
-mongoose.connect(process.env.MONGO).then(()=>{
+mongoose
+  .connect(process.env.MONGO)
+  .then(() => {
     console.log("connected to mongoDB");
-}).catch((err)=>{
+  })
+  .catch((err) => {
     console.log(err);
-})
+  });
+  const __dirname=path.resolve();
+
 
 //routes for different cases
-app.use("/api/user"  , userRouter);
-app.use("/api/auth" , authRouter); 
-app.use("/api/listing" , listingRouter); 
+app.use("/api/user", userRouter);
+app.use("/api/auth", authRouter);
+app.use("/api/listing", listingRouter);
+
+//making code work in other computers
+app.use(express.static(path.join(__dirname , '/client/dist')));
+
+app.get('*', (req , res)=>{
+    res.sendFile(path.join(__dirname , 'client' , 'dist' , 'index.html'));
+})
 
 // middleware for error handling
-app.use((err ,req , res , next)=>{
-    const statusCode=err.statusCode || 500;
-    console.log("@index.js : middleware caught error :",err.message);
-    const message=err.message || "internal server ERROR";
-    return res.status(statusCode).json({
-        success:false,
-        statusCode,
-        message,
-    });
-})
+app.use((err, req, res, next) => {
+  const statusCode = err.statusCode || 500;
+  console.log("@index.js : middleware caught error :", err.message);
+  const message = err.message || "internal server ERROR";
+  return res.status(statusCode).json({
+    success: false,
+    statusCode,
+    message,
+  });
+});
 
 
-app.listen(3000 , () =>{
-    try {
-        console.log("server running on server 3000");
 
-    } catch (error) {
-        console.log(error);
-    }
-})
 
+app.listen(3000, () => {
+  try {
+    console.log("server running on server 3000");
+  } catch (error) {
+    console.log(error);
+  }
+});
