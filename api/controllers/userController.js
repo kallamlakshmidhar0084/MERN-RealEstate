@@ -3,8 +3,14 @@ import User from "../models/usersModel.js"
 import { errorHandler } from "../utils/error.js"
 import bcryptjs from 'bcryptjs'
 
-export const getContacts= (req , res)=>{
-    res.send("hello")
+export const getContacts= async (req , res , next)=>{
+    try {
+        const user= await User.findById(req.params.id);
+        const {password , ...safeUser}=user;
+        res.status(200).json({safeUser})
+    } catch (error) {
+        next(errorHandler(error));
+    }
 } 
 
 export const updateUser = async (req , res , next)=>{ 

@@ -14,7 +14,7 @@ import {
     FaShare,
   } from 'react-icons/fa';
 
-import { useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 
 function Listing() {
@@ -25,6 +25,7 @@ function Listing() {
     const  [error , setError] = useState(false);
     const [copied, setCopied] = useState(false);
   const [contact, setContact] = useState(false);
+  const [email,setEmail]=useState(null);
     SwiperCore.use([Navigation]);
     useEffect(()=>{
         const getListing=async ()=>{
@@ -35,13 +36,16 @@ function Listing() {
                 const listingId=params.listingId;
                 console.log(listingId)
                 const data= await axios.get(`/api/listing/getList/${listingId}`)
-                console.log(data)
+                const landlord=await axios.get(`/api/user/getUser/${data.data.userRef}`)
+                console.log(landlord)
+                setEmail(landlord.data.safeUser._doc.email)
                 setListing(data.data);
                 setLoading(false);
                 
             } catch (error) {
                 setLoading(false);
                 setError(error);
+                console.log(error);
                 
             }
             
@@ -49,6 +53,8 @@ function Listing() {
         }
         getListing()
     },[])
+
+
   return (
     <>
     <main>
@@ -129,15 +135,18 @@ function Listing() {
                 {listing.furnished ? 'Furnished' : 'Unfurnished'}
               </li>
             </ul>
-            {currentUser && listing.userRef !== currentUser.data._id && !contact && (
-              <button
-                onClick={() => setContact(true)}
-                className='bg-slate-700 text-white rounded-lg uppercase hover:opacity-95 p-3'
-              >
-                Contact landlord
-              </button>
+            {currentUser &&  !contact && (
+                <>
+                 <Link to={`mailto:${email}?subject=Regarding ${listing.name}`}>
+                <button className='bg-slate-700 justify-center flex text-white rounded-lg uppercase hover:opacity-95 p-3'>
+                    <span>Contact landlord {listing.name} at </span>{email}
+                </button>
+                </Link>
+
+                </>
+                
+                
             )}
-            {/* {contact && <Contact listing={listing} />} */}
           </div>
 
             </div>
